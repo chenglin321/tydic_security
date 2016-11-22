@@ -1,0 +1,60 @@
+security提供内容过滤、ip黑白名单、MD5、SHA、AES、DES、DESede、RSA等安全算法,以及X509操作,该组件要求JDK版本在1.5及以上。
+支持Sun JDK以及JRockit JDK,IBM JDK支持不完善
+
+配置依赖以下：
+servlet-2.x.jar (仅对使用IPFilter类似的过滤器时需要）
+commons-logging-1.1.1.jar 提供日志输出插件（具体可用log4j,jdk log等）
+commons-codec-1.5.jar 提供base64编码
+dom4j-1.6.jar 
+common-0.0.2.jar --自身提供的组件
+
+配置：
+1.在web.xml中加入sysConfigRefTime和sysConfigLocation配置，例子如下：
+<context-param>
+		<description>sysconfi.properties配置文件动态刷新时间，单位毫秒</description>
+		<param-name>sysConfigRefTime</param-name>
+		<param-value>30000</param-value>
+	</context-param>
+	<context-param>
+		<param-name>sysConfigLocation</param-name>
+		<param-value>file:./config/xxx/sysconf.properties</param-value>
+	</context-param>
+2.在web.xml增加对sysconf.properties的监听器（以便进行配置加载,该监听器在0.1.1及之后提供），如下：
+<listener>
+		<listener-class>com.tydic.listener.ConfigListener</listener-class>
+</listener>
+3.在ip拦截以及内容拦截时会重定向到指定uri，所以需要定义重定义路径：例子如下：
+<context-param>
+		<description>全局的错误重定义路径,在子局无配置的情况下会尝试取该路径</description>
+		<param-name>errorRedirectUrl</param-name>
+		<param-value>/error.html</param-value>
+</context-param>
+4.对ip拦截和内容拦截的过滤器如下：
+<filter>
+		<filter-name>IPFilter</filter-name>
+		<filter-class>com.tydic.filter.ip.IPFilter</filter-class>
+		<init-param>
+			<param-name>redirectUrl</param-name>
+			<param-value>/iperror.html</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>IPFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>keyWordsFilter</filter-name>
+		<filter-class>com.tydic.filter.keywords.KeyWordsFilter</filter-class>
+		<init-param>
+			<param-name>redirectUrl</param-name>
+			<param-value>/error.html</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>keyWordsFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+备注：
+a.对第3点和第4点进行说明，当第4点中拦截出现中断时会优先去找局部的重写向地址redirectUrl，如果该值未配置，则会去查找和重定向errorRedirectUrl。
+b.对sysConfigLocation值来说是指向配置文件的文件路径，可使用file:前缀和classpath:前缀，一个代表文件目录路径，一个代表类路径

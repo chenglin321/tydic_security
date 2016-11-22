@@ -1,0 +1,47 @@
+﻿V0.0.1
+实现md5,sha,aes,des,3des,rsa,dsa和密钥库应用
+
+V0.0.2
+1.增加了对密钥库密钥的导入导出功能 KeyStoreUtil
+2.增加了文件的复制功能 IOUtil
+
+V0.0.3
+1.增加了对HashMac的支持 com.tydic.HashMac //默认提供sha256-mac
+2.拆分了常用工具包 common-xxx.jar与security-xxx.jar
+3.增加了正则表达式工具类 com.tydic.util.RegexUtil
+4.增加了主键标识生成器 com.tydic.util.IdentifierUtil //支持uuid,guid
+
+V0.0.4
+1.将KeyFactory中public static Key getKey(int keySize, String algorithm)
+换为public Key getKey(int keySize, String algorithm)
+2..增加对HTML转码的转换工具类 HTMLUtil（转码规则来源于与华为沟通的XLS)
+3.增加了RequestUtil工具类，它提供了线程局部对称http request的支持 
+4.增加了对关键字内容过滤的功能模块（动态配置，无需重启），详情见设计文档 3.11章节
+
+V0.05
+1.增加了String 动态数组的空判断 NullUtil.java
+2.增加了IP的黑白名单拦截功能，详情见设计文档3.12章节
+3.配置文件sysconf.properties中增加了相应配置（支持动态修改刷新）
+4.web.xml中指定对要拦截的url或servlet进行ip过滤
+
+0.0.6
+1.增加了弱口令检测
+
+0.0.7
+1.增加了口令字符出现最大次数检测
+2.增加了口令字符连续出现最大次数检测
+
+0.0.8
+1.重构了配置文件刷新监听器（IPConfigListener、WeakPasswordsConfigListener、ScannerConfigListener)
+
+0.0.9
+1.重构了ConfigUtil.init()，该初始方法会执行一次加载动作，无须在首次加载时再指定一次ConfigUtil.loadConfig();
+2.指定了配置文件刷新线程名：ConfigWatchdog 
+3.重构了加密存储逻辑，之前明文加密存储时会打乱配置文件配置项顺序，修正后不影响配置项顺序和注释
+4.重构了IOUtil.getPath()方法名，名IOUtil.getFileWithPath() 
+5.重构HashMac.java，把指定key的hashmac方法由原来的静态方法改为成员方法
+
+0.1.0
+1.修整了统一对keywords的16进制转换处理，该环境在正则表达式中去体现相关配置
+
+0.1.1增加了ConfigListener配置文件加载监听器，统一对sysconf.properties的配置文件加载
